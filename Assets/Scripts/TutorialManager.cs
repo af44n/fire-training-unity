@@ -98,19 +98,32 @@ public class TutorialManager : MonoBehaviour
 
     // ── Success screen (built entirely in code) ──────────────────────
 
+    GameObject CreateUIObj(string name, Transform parent)
+    {
+        var go = new GameObject(name, typeof(RectTransform));
+        go.transform.SetParent(parent, false);
+        var rt = go.GetComponent<RectTransform>();
+        rt.localScale = Vector3.one;
+        rt.localRotation = Quaternion.identity;
+        return go;
+    }
+
     void BuildSuccessScreen()
     {
         // Find the existing screen-space canvas
         var canvas = Object.FindAnyObjectByType<Canvas>();
         if (canvas == null) return;
 
-        // Root overlay (semi-dark, non-blocking)
-        runtimeSuccessOverlay = new GameObject("SuccessOverlay");
-        runtimeSuccessOverlay.transform.SetParent(canvas.transform, false);
+        // Root overlay (MUST be a RectTransform to fill canvas)
+        runtimeSuccessOverlay = CreateUIObj("SuccessOverlay", canvas.transform);
+        var overlayRT = runtimeSuccessOverlay.GetComponent<RectTransform>();
+        overlayRT.anchorMin = Vector2.zero;
+        overlayRT.anchorMax = Vector2.one;
+        overlayRT.offsetMin = Vector2.zero;
+        overlayRT.offsetMax = Vector2.zero;
 
         // Dark vignette behind the card
-        var bg = new GameObject("SuccessBg");
-        bg.transform.SetParent(runtimeSuccessOverlay.transform, false);
+        var bg = CreateUIObj("SuccessBg", runtimeSuccessOverlay.transform);
         var bgImg = bg.AddComponent<UnityEngine.UI.Image>();
         bgImg.color = new Color(0f, 0f, 0f, 0.72f);
         var bgRT = bg.GetComponent<RectTransform>();
@@ -120,8 +133,7 @@ public class TutorialManager : MonoBehaviour
         bgRT.offsetMax = Vector2.zero;
 
         // White card
-        var card = new GameObject("SuccessCard");
-        card.transform.SetParent(runtimeSuccessOverlay.transform, false);
+        var card = CreateUIObj("SuccessCard", runtimeSuccessOverlay.transform);
         var cardImg = card.AddComponent<UnityEngine.UI.Image>();
         cardImg.color = new Color(0.12f, 0.12f, 0.12f, 0.95f);
         var cardRT = card.GetComponent<RectTransform>();
@@ -131,8 +143,7 @@ public class TutorialManager : MonoBehaviour
         cardRT.offsetMax = Vector2.zero;
 
         // Green accent bar at top of card
-        var bar = new GameObject("SuccessBar");
-        bar.transform.SetParent(card.transform, false);
+        var bar = CreateUIObj("SuccessBar", card.transform);
         var barImg = bar.AddComponent<UnityEngine.UI.Image>();
         barImg.color = new Color(0.18f, 0.72f, 0.25f, 1f);
         var barRT = bar.GetComponent<RectTransform>();
@@ -142,15 +153,14 @@ public class TutorialManager : MonoBehaviour
         barRT.offsetMax = Vector2.zero;
 
         // "TRAINING COMPLETE" label in the bar
-        var headerGO = new GameObject("SuccessHeader");
-        headerGO.transform.SetParent(bar.transform, false);
+        var headerGO = CreateUIObj("SuccessHeader", bar.transform);
         var headerTxt = headerGO.AddComponent<TextMeshProUGUI>();
         headerTxt.text = "TRAINING COMPLETE";
-        headerTxt.fontSize = 28;
+        headerTxt.fontSize = 32;
         headerTxt.fontStyle = TMPro.FontStyles.Bold;
         headerTxt.color = Color.white;
         headerTxt.alignment = TMPro.TextAlignmentOptions.Center;
-        headerTxt.enableWordWrapping = false; // Prevent vertical text
+        headerTxt.enableWordWrapping = false;
         var headerRT = headerGO.GetComponent<RectTransform>();
         headerRT.anchorMin = Vector2.zero;
         headerRT.anchorMax = Vector2.one;
@@ -158,14 +168,13 @@ public class TutorialManager : MonoBehaviour
         headerRT.offsetMax = Vector2.zero;
 
         // Body text
-        var bodyGO = new GameObject("SuccessBody");
-        bodyGO.transform.SetParent(card.transform, false);
+        var bodyGO = CreateUIObj("SuccessBody", card.transform);
         var bodyTxt = bodyGO.AddComponent<TextMeshProUGUI>();
         bodyTxt.text = "Fire extinguished.\nYou passed the training.";
-        bodyTxt.fontSize = 22;
+        bodyTxt.fontSize = 26;
         bodyTxt.color = new Color(0.85f, 0.85f, 0.85f, 1f);
         bodyTxt.alignment = TMPro.TextAlignmentOptions.Center;
-        bodyTxt.enableWordWrapping = false; // Prevent vertical text
+        bodyTxt.enableWordWrapping = false;
         var bodyRT = bodyGO.GetComponent<RectTransform>();
         bodyRT.anchorMin = new Vector2(0.05f, 0.45f);
         bodyRT.anchorMax = new Vector2(0.95f, 0.80f);
@@ -173,8 +182,7 @@ public class TutorialManager : MonoBehaviour
         bodyRT.offsetMax = Vector2.zero;
 
         // Retry Button
-        var btnGO = new GameObject("RetryButton");
-        btnGO.transform.SetParent(card.transform, false);
+        var btnGO = CreateUIObj("RetryButton", card.transform);
         var btnImg = btnGO.AddComponent<UnityEngine.UI.Image>();
         btnImg.color = new Color(0.25f, 0.25f, 0.25f, 1f);
         var btn = btnGO.AddComponent<UnityEngine.UI.Button>();
@@ -186,11 +194,10 @@ public class TutorialManager : MonoBehaviour
         btnRT.offsetMax = Vector2.zero;
 
         // Retry Button Text
-        var btnTxtGO = new GameObject("RetryText");
-        btnTxtGO.transform.SetParent(btnGO.transform, false);
+        var btnTxtGO = CreateUIObj("RetryText", btnGO.transform);
         var btnTxt = btnTxtGO.AddComponent<TextMeshProUGUI>();
         btnTxt.text = "Retry Training";
-        btnTxt.fontSize = 20;
+        btnTxt.fontSize = 22;
         btnTxt.color = Color.white;
         btnTxt.alignment = TMPro.TextAlignmentOptions.Center;
         btnTxt.enableWordWrapping = false;
@@ -201,11 +208,10 @@ public class TutorialManager : MonoBehaviour
         btnTxtRT.offsetMax = Vector2.zero;
 
         // Hint at the bottom
-        var hintGO = new GameObject("SuccessHint");
-        hintGO.transform.SetParent(card.transform, false);
+        var hintGO = CreateUIObj("SuccessHint", card.transform);
         var hintTxt = hintGO.AddComponent<TextMeshProUGUI>();
         hintTxt.text = "Press Escape to unlock cursor.";
-        hintTxt.fontSize = 14;
+        hintTxt.fontSize = 16;
         hintTxt.color = new Color(0.55f, 0.55f, 0.55f, 1f);
         hintTxt.alignment = TMPro.TextAlignmentOptions.Center;
         hintTxt.enableWordWrapping = false;

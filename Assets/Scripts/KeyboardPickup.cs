@@ -132,6 +132,9 @@ public class KeyboardPickup : MonoBehaviour
 
     void OnGUI()
     {
+        if (tutorialManager != null && tutorialManager.currentPhase == TutorialManager.TrainingPhase.Success)
+            return;
+
         if (!isHolding && cameraTransform != null)
         {
             foreach (var ext in Object.FindObjectsByType<ExtinguisherController>(FindObjectsSortMode.None))

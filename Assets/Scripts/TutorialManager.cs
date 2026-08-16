@@ -125,8 +125,8 @@ public class TutorialManager : MonoBehaviour
         var cardImg = card.AddComponent<UnityEngine.UI.Image>();
         cardImg.color = new Color(0.12f, 0.12f, 0.12f, 0.95f);
         var cardRT = card.GetComponent<RectTransform>();
-        cardRT.anchorMin = new Vector2(0.25f, 0.3f);
-        cardRT.anchorMax = new Vector2(0.75f, 0.7f);
+        cardRT.anchorMin = new Vector2(0.25f, 0.25f);
+        cardRT.anchorMax = new Vector2(0.75f, 0.75f);
         cardRT.offsetMin = Vector2.zero;
         cardRT.offsetMax = Vector2.zero;
 
@@ -150,6 +150,7 @@ public class TutorialManager : MonoBehaviour
         headerTxt.fontStyle = TMPro.FontStyles.Bold;
         headerTxt.color = Color.white;
         headerTxt.alignment = TMPro.TextAlignmentOptions.Center;
+        headerTxt.enableWordWrapping = false; // Prevent vertical text
         var headerRT = headerGO.GetComponent<RectTransform>();
         headerRT.anchorMin = Vector2.zero;
         headerRT.anchorMax = Vector2.one;
@@ -164,25 +165,59 @@ public class TutorialManager : MonoBehaviour
         bodyTxt.fontSize = 22;
         bodyTxt.color = new Color(0.85f, 0.85f, 0.85f, 1f);
         bodyTxt.alignment = TMPro.TextAlignmentOptions.Center;
+        bodyTxt.enableWordWrapping = false; // Prevent vertical text
         var bodyRT = bodyGO.GetComponent<RectTransform>();
-        bodyRT.anchorMin = new Vector2(0.05f, 0.35f);
+        bodyRT.anchorMin = new Vector2(0.05f, 0.45f);
         bodyRT.anchorMax = new Vector2(0.95f, 0.80f);
         bodyRT.offsetMin = Vector2.zero;
         bodyRT.offsetMax = Vector2.zero;
+
+        // Retry Button
+        var btnGO = new GameObject("RetryButton");
+        btnGO.transform.SetParent(card.transform, false);
+        var btnImg = btnGO.AddComponent<UnityEngine.UI.Image>();
+        btnImg.color = new Color(0.25f, 0.25f, 0.25f, 1f);
+        var btn = btnGO.AddComponent<UnityEngine.UI.Button>();
+        btn.onClick.AddListener(() => UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name));
+        var btnRT = btnGO.GetComponent<RectTransform>();
+        btnRT.anchorMin = new Vector2(0.35f, 0.20f);
+        btnRT.anchorMax = new Vector2(0.65f, 0.35f);
+        btnRT.offsetMin = Vector2.zero;
+        btnRT.offsetMax = Vector2.zero;
+
+        // Retry Button Text
+        var btnTxtGO = new GameObject("RetryText");
+        btnTxtGO.transform.SetParent(btnGO.transform, false);
+        var btnTxt = btnTxtGO.AddComponent<TextMeshProUGUI>();
+        btnTxt.text = "Retry Training";
+        btnTxt.fontSize = 20;
+        btnTxt.color = Color.white;
+        btnTxt.alignment = TMPro.TextAlignmentOptions.Center;
+        btnTxt.enableWordWrapping = false;
+        var btnTxtRT = btnTxtGO.GetComponent<RectTransform>();
+        btnTxtRT.anchorMin = Vector2.zero;
+        btnTxtRT.anchorMax = Vector2.one;
+        btnTxtRT.offsetMin = Vector2.zero;
+        btnTxtRT.offsetMax = Vector2.zero;
 
         // Hint at the bottom
         var hintGO = new GameObject("SuccessHint");
         hintGO.transform.SetParent(card.transform, false);
         var hintTxt = hintGO.AddComponent<TextMeshProUGUI>();
-        hintTxt.text = "Press Escape to exit play mode.";
+        hintTxt.text = "Press Escape to unlock cursor.";
         hintTxt.fontSize = 14;
         hintTxt.color = new Color(0.55f, 0.55f, 0.55f, 1f);
         hintTxt.alignment = TMPro.TextAlignmentOptions.Center;
+        hintTxt.enableWordWrapping = false;
         var hintRT = hintGO.GetComponent<RectTransform>();
         hintRT.anchorMin = new Vector2(0.05f, 0.05f);
-        hintRT.anchorMax = new Vector2(0.95f, 0.28f);
+        hintRT.anchorMax = new Vector2(0.95f, 0.15f);
         hintRT.offsetMin = Vector2.zero;
         hintRT.offsetMax = Vector2.zero;
+        
+        // Unlock cursor for clicking the button
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     // ── Helpers ──────────────────────────────────────────────────────
